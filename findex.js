@@ -1,40 +1,30 @@
 let data;
+
 const personUrl = "https://api.themoviedb.org/3/person/";
 const apiKey = "f81e7188a3edbd50a3b8d2c31b32b365";
 const movieUrl = "https://api.themoviedb.org/3/movie/";
 const imageUrl = "https://image.tmdb.org/t/p/original";
-let movieIds;
-let newArray;
-let filteredMovies;
-let filteredMoviesbyGenres;
-
-const queryString = window.location.search;
-const queryParamsMap = new URLSearchParams(queryString);
-console.log(queryParamsMap.get("id"), queryParamsMap.get("posterPath"));
-
 import("./src/moviesPlay.js").then((res) => {
   console.log("data imported into data constant");
   data = res;
 
   run();
 });
-
 document.addEventListener("DOMContentLoaded", function () {
-  
-  var radioButtons = document.getElementsByName("movie-filter");
-  var releaseYearSelect = document.getElementById("release-year");
-  var genresSelect = document.getElementById("genres");
-  var searchInput = document.getElementById("search-input");
+ var radioButtons = document.getElementsByName("movie-filter");
+ var releaseYearSelect = document.getElementById("release-year");
+ var genresSelect = document.getElementById("genres");
+ var searchInput = document.getElementById("search-input");
 
-  releaseYearSelect.addEventListener("change", handleFilterChange);
-  genresSelect.addEventListener("change", handleFilterChange);
+ releaseYearSelect.addEventListener("change", handleFilterChange);
+ genresSelect.addEventListener("change", handleFilterChange);
 
-  radioButtons.forEach(function (radioButton) {
+ radioButtons.forEach(function (radioButton) {
     radioButton.addEventListener("change", handleFilterChange);
-  });
+ });
 
-    function handleFilterChange() {
-    var selectedValue = getSelectedRadioValue("movie-filter");
+ function handleFilterChange() {
+   var selectedValue = getSelectedRadioValue("movie-filter");
     console.log(selectedValue);
     if (selectedValue === "data.movies") {
       window.changeData = data.movies.slice(0, 100);
@@ -135,28 +125,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const selectedGenres = document.getElementById("genres").value;
     filteredMovies = filterMoviesByGenres(selectedGenres, filteredMovies);
+    function getSelectedRadioValue(name) {
+      var selectedValue = null;
+      var radioButtons = document.getElementsByName(name);
+  
+      radioButtons.forEach(function (radioButton) {
+        if (radioButton.checked) {
+          selectedValue = radioButton.value;
+        }
+      });
+  
+      return selectedValue;
+    }
 
-  }
-
-  function getSelectedRadioValue(name) {
-    var selectedValue = null;
-    var radioButtons = document.getElementsByName(name);
-
-    radioButtons.forEach(function (radioButton) {
-      if (radioButton.checked) {
-        selectedValue = radioButton.value;
-      }
-    });
-
-    return selectedValue;
-  }
+ }
 });
-
 function run() {}
 
-
 function getMovieInformation() {
-  const fetchArray = filteredMovies.map((movieId) => {
+ const fetchArray = filteredMovies.map((movieId) => {
     return fetch(`${movieUrl}${movieId.tmdbId}?api_key=${apiKey}`).then(
       (response) => response.json()
     );
@@ -191,9 +178,8 @@ function getMovieInformation() {
     }
   });
 }
-
 function getMovieHtml(moviesInfo) {
-  return moviesInfo.map((movie) => {
+ return moviesInfo.map((movie) => {
     return `
       <div class="card">
         <div class="image">
@@ -216,9 +202,8 @@ function getMovieHtml(moviesInfo) {
 }
 
 function updateContentWithMovies(moviesInfo) {
-  const movieHtmlArray = getMovieHtml(moviesInfo);
-  document.getElementById("content").innerHTML = movieHtmlArray.join("");
+ const movieHtmlArray = getMovieHtml(moviesInfo);
+ document.getElementById("content").innerHTML = movieHtmlArray.join("");
 }
 
 updateContentWithMovies(moviesInfo);
-
